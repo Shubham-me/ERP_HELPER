@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "ERP-Helper",
+  "version": "1.0",
+  "description": "ERP academic analyser",
+  "permissions": ["scripting", "activeTab"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "images/pizza.png",
+    "48": "images/pizza.png",
+    "128": "images/pizza.png"
+  },
+  "web_accessible_resources": [
+    {
+        "resources": ["images/*.png", "images/*.jpg", "images/*.gif"],
+        "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": {} 
+}
