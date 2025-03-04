@@ -24,24 +24,24 @@ var run = () => {
     table.id = 'academic-history-table';
 
     let choiceCol = document.createElement('th');
-    choiceCol.className = "sorting"; 
+    choiceCol.className = "sorting";
     choiceCol.tabIndex = 0;
-    choiceCol.setAttribute('aria-controls', 'grd_68E1EA0F-E456-4FF4-8DAF-ECC2D61B997F'); 
-    choiceCol.rowSpan = 1; 
-    choiceCol.colSpan = 1; 
-    choiceCol.setAttribute('aria-label', 'Registration Type: activate to sort column ascending'); 
-    choiceCol.textContent = "Choice"; 
+    choiceCol.setAttribute('aria-controls', 'grd_68E1EA0F-E456-4FF4-8DAF-ECC2D61B997F');
+    choiceCol.rowSpan = 1;
+    choiceCol.colSpan = 1;
+    choiceCol.setAttribute('aria-label', 'Registration Type: activate to sort column ascending');
+    choiceCol.textContent = "Choice";
     table.querySelector('thead').querySelector('tr').appendChild(choiceCol);
 
     table.querySelector('tbody').querySelectorAll('tr').forEach(tr => {
-        tr.querySelectorAll('td').forEach((td,index) => {
+        tr.querySelectorAll('td').forEach((td, index) => {
             td.querySelector('div').querySelector('span').remove(); // redundant element
-            if(index == 4){
+            if (index == 4) {
                 let grade = td.querySelector('div').querySelector('span').cloneNode(true).textContent;
                 td.querySelector('div').remove();
                 let button = document.createElement('button');
                 button.textContent = grade;
-                button.setAttribute('onclick',`((button) => {let newgrade = prompt('Edit: ',button.textContent);if(newgrade) button.textContent = newgrade;})(this)
+                button.setAttribute('onclick', `((button) => {let newgrade = prompt('Edit: ',button.textContent);if(newgrade) button.textContent = newgrade;})(this)
                 `);
                 td.appendChild(button);
             }
@@ -68,29 +68,33 @@ var run = () => {
     var createSemesterGradeTable = (grades) => {
         const table = document.createElement('table');
         table.classList.add('semester-grade-table');
-      
+
         const headerRow = table.insertRow();
-        headerRow.insertCell().textContent = 'Semester'; 
+        headerRow.insertCell().textContent = 'Semester';
         for (let i = 1; i <= 8; i++) {
-          headerRow.insertCell().textContent = i;
+            headerRow.insertCell().textContent = i;
         }
-      
+
         const maxGrades = Math.max(...Object.values(grades).map(arr => arr.length));
-      
+
         for (let i = 0; i < maxGrades; i++) {
-          const row = table.insertRow();
-          row.insertCell().textContent = `${i + 1}`; 
-      
-          for (let j = 1; j <= 8; j++) {
-            const cell = row.insertCell();
-            if (grades[j] && grades[j][i] !== undefined) {
-              cell.textContent = grades[j][i];
-              cell.classList.add('grade-cell'); 
-              cell.dataset.grade = grades[j][i];
+            const row = table.insertRow();
+            row.insertCell().textContent = `${i + 1}`;
+
+            for (let j = 1; j <= 8; j++) {
+                const cell = row.insertCell();
+                if (grades[j] && grades[j][i] !== undefined) {
+                    cell.textContent = grades[j][i].point;
+                    cell.classList.add('grade-cell');
+                    let hoverBox = document.createElement('div');
+                    hoverBox.classList.add('hover-box');
+                    hoverBox.textContent = grades[j][i].course;
+                    cell.appendChild(hoverBox);
+                    cell.dataset.grade = grades[j][i].point;
+                }
             }
-          }
         }
-      
+
         return table;
     };
 
@@ -119,7 +123,7 @@ var run = () => {
         let deptGPA = {};
         let deptCredits = {};
         let deptGradePoints = {};
-        let semGrades = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []};
+        let semGrades = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [] };
 
 
         let sgpa = Array(9);
@@ -143,14 +147,19 @@ var run = () => {
             let type = '';
             let consider = true;
             let dept = '';
+            let courseName = '';
             tr.querySelectorAll('td').forEach((block, index) => {
                 if (index == 0) {
                     currSem = parseInt(block.querySelector('div').querySelector('span').textContent, 10);
                 }
-                else if(index == 1){
+                else if (index == 1) {
                     dept = block.querySelector('div').querySelector('span').textContent;
                     dept = dept.trim();
-                    dept = dept.substring(0,2);
+                    dept = dept.substring(0, 2);
+                }
+                else if(index == 2){
+                    courseName = block.querySelector('div').querySelector('span').textContent;
+                    courseName = courseName.trim();
                 }
                 else if (index == 3) {
                     credits = parseInt(block.querySelector('div').querySelector('span').textContent, 10);
@@ -164,13 +173,13 @@ var run = () => {
                     type = type.trim();
                 }
                 else if (index == 7) {
-                    if(!(gradePoint in gradeToNum)){
+                    if (!(gradePoint in gradeToNum)) {
                         consider = false;
                         block.querySelector('button').style.backgroundColor = 'red';
                         gradePoint = 0;
                         credits = 0;
                     }
-                    else{
+                    else {
                         consider = block.querySelector('button').style.backgroundColor == 'green';
                         gradePoint = gradeToNum[gradePoint];
                     }
@@ -178,7 +187,10 @@ var run = () => {
             });
 
             if (consider) {
-                semGrades[currSem].push(gradePoint);
+                semGrades[currSem].push({
+                    'point' : gradePoint,
+                    'course' : courseName
+                });
                 if (type != 'Additional') {
                     totalCredits += credits;
                     totalGradePoints += credits * gradePoint;
@@ -213,7 +225,7 @@ var run = () => {
         infoTable.style.margin = '20px auto';
         infoTable.style.borderCollapse = 'collapse';
         infoTable.style.width = '50%';
-        
+
         let infoTableBody = document.createElement('tbody');
         infoTableBody.innerHTML = `
         <tr>
@@ -231,7 +243,7 @@ var run = () => {
         `;
         infoTable.appendChild(infoTableBody);
         table.insertAdjacentElement('beforebegin', infoTable);
-        
+
         for (let i = 1; i <= 8; i++) {
             sgpa[i] = semGradePoints[i] / semCredits[i];
         }
@@ -386,22 +398,22 @@ var run = () => {
             }
 
             footer {
-                background-color: #333; /* Darker footer to match the theme */
+                background-color: #333; 
                 text-align: left;
                 color: white;
                 font-size: 16px;
-                position: relative; /* Changed to relative for better layout control */
+                position: relative; 
                 left: 0;
                 bottom: 0;
                 width: 100%;
-                padding: 20px; /* Added padding for better spacing */
+                padding: 20px;
             }
 
             #website-name {
                 text-align: left;
                 font-size: 32px;
                 font-weight: bold;
-                color: #4CAF50; /* Green website name to match buttons and tables */
+                color: #4CAF50; 
                 font-family: 'Arial', sans-serif;
                 margin: 10px 0;
                 padding: 5px;
@@ -409,7 +421,7 @@ var run = () => {
             }
 
             .generateButton, .toggleButton {
-                background-color: #4CAF50; /* Green buttons */
+                background-color: #4CAF50;
                 border: none;
                 color: white;
                 padding: 10px 20px;
@@ -418,11 +430,11 @@ var run = () => {
                 display: inline-block;
                 font-size: 16px;
                 cursor: pointer;
-                transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+                transition: background-color 0.3s ease;
             }
 
             .generateButton:hover, .toggleButton:hover {
-                background-color: #3e8e41; /* Slightly darker green on hover */
+                background-color: #3e8e41; 
             }
 
             button:active {
@@ -471,7 +483,19 @@ var run = () => {
                 font-weight: bold;
             }
 
+            .hover-box {
+                position: relative;
+                display: none;
+                color: #000;
+                border: 1px solid black;
+            }
+
+            .grade-cell:hover .hover-box {
+                display: block;
+            }
+                
             .grade-cell {
+                position: relative;
                 border: 1px solid black;
             }
             .grade-cell[data-grade="10"] {
