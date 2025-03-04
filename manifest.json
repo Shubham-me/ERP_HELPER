@@ -8,6 +8,10 @@
     "service_worker": "background.js",
     "type": "module"
   },
+  "popup": {
+    "page": "popup.html",
+    "persistent": false
+  },
   "icons": {
     "16": "images/pizza.png",
     "48": "images/pizza.png",
@@ -15,10 +19,17 @@
   },
   "web_accessible_resources": [
     {
-        "resources": ["images/*.png", "images/*.jpg", "images/*.gif"],
-        "matches": ["<all_urls>"]
+      "matches": ["<all_urls>"],
+      "resources": ["images/*.png", "images/*.jpg", "images/*.gif"]
     }
   ],
   "host_permissions": ["<all_urls>"],
-  "action": {} 
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/pizza.png",
+      "48": "images/pizza.png",
+      "128": "images/pizza.png"
+    }
+  }
 }
