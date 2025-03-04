@@ -486,7 +486,7 @@ var run = () => {
             .hover-box {
                 position: relative;
                 display: none;
-                color: #000;
+                color: white;
                 border: 1px solid black;
             }
 
