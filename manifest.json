@@ -9,9 +9,9 @@
     "type": "module"
   },
   "icons": {
-    "16": "images/pizza.png",
-    "48": "images/pizza.png",
-    "128": "images/pizza.png"
+    "16": "images/panda.png",
+    "48": "images/panda.png",
+    "128": "images/panda.png"
   },
   "web_accessible_resources": [
     {
@@ -23,9 +23,9 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/pizza.png",
-      "48": "images/pizza.png",
-      "128": "images/pizza.png"
+      "16": "images/panda.png",
+      "48": "images/panda.png",
+      "128": "images/panda.png"
     }
   }
 }
